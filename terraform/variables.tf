@@ -5,9 +5,7 @@ variable "aws_region" {
 
 variable "s3_bucket_name" {
   description = "Name of the S3 bucket"
+  default     = "thgbin_bucket"
 }
 
-variable "bucket_name" {
-  description = "Name of the S3 bucket for IAM role"
-}
 

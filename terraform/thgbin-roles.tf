@@ -17,7 +17,7 @@ EOF
 }
 
 resource "aws_iam_policy" "thgbin_policy" {
-  name        = "thgbin_s3_policy"
+  name        = "thgbin_policy"
   description = "Policy to allow EC2 access to S3 bucket"
   policy = jsonencode({
     Version = "2012-10-17"
@@ -47,7 +47,7 @@ resource "aws_s3_bucket_policy" "thgbin_s3_policy" {
     Statement = [
       {
         Effect    = "Allow"
-        Principal = { AWS = "arn:aws:iam::491085414522:role/thgbin_ec2" } # Correct Principal
+        Principal = { AWS = "arn:aws:iam::491085414522:role/thgbin-ec2-role" }
         Action = [
           "s3:GetObject",
           "s3:PutObject",
