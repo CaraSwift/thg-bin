@@ -10,3 +10,6 @@ module "iam" {
   source = "./.terraform"
 }
 
+module "ec2" {
+  source = "./.terraform"
+}
