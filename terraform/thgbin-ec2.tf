@@ -1,7 +1,7 @@
-resource "aws_instance" "ec2_instance" {
+resource "aws_instance" "thgbin_instance" {
   ami           = var.ami_id
   instance_type = var.instance_type
-  key_name      = var.key_pair_name
+  key_name      = var.aws_key_pair
   security_groups = [
     aws_security_group.ec2_sg.name
   ]

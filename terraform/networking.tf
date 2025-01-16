@@ -1,11 +1,16 @@
 # Elastic IP
-resource "aws_eip" "example_eip" {
-  vpc = true
+resource "aws_eip" "thgbin_ip" {
+  instance = aws_instance.thgbin_instance.id
+
+  tags = {
+    Name = "thgbin_eip"
+  }
 }
 
+
 # Security Group
-resource "aws_security_group" "example_sg" {
-  name        = "example-sec-group"
+resource "aws_security_group" "thgbin_sg" {
+  name        = "thgbin-sec-group"
   description = "Allow SSH and HTTP"
 
   ingress {
@@ -34,7 +39,7 @@ resource "aws_security_group" "example_sg" {
 }
 
 # Associate Elastic IP with the instance
-resource "aws_eip_association" "example_eip_assoc" {
-  instance_id   = aws_instance.example_ec2.id
-  allocation_id = aws_eip.example_eip.id
+resource "aws_eip_association" "thgbin_ip_ec" {
+  instance_id   = aws_instance.thgbin_instance.id
+  allocation_id = aws_eip.thgbin_ip.id
 }
