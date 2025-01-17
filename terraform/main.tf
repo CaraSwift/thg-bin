@@ -1,8 +1,8 @@
 terraform {
   backend "s3" {
-    bucket         = "s3_bucket_name"
+    bucket         = "thgbin-bucket"
     key            = "terraform/terraform.tfstate"
-    region         = "aws_region"
+    region         = "eu-west-2"
   }
 }
 
