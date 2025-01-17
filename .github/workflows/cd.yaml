@@ -19,6 +19,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Check AWS Credentials
+        run: |
+          echo "AWS Access Key: $AWS_ACCESS_KEY_ID"
+          echo "AWS Secret Key: $AWS_SECRET_ACCESS_KEY"
+
+
         # Step 2: Set up Terraform
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
