@@ -19,37 +19,41 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Check AWS Credentials
+      # Step 2: Validate AWS Credentials (Optional Debugging)
+      - name: Validate AWS Credentials
         run: |
-          echo "AWS Access Key: $AWS_ACCESS_KEY_ID"
-          echo "AWS Secret Key: $AWS_SECRET_ACCESS_KEY"
+          if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
+            echo "AWS credentials are missing."
+            exit 1
+          else
+            echo "AWS credentials are set."
+          fi
 
-
-        # Step 2: Set up Terraform
+      # Step 3: Set up Terraform
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.5.0
 
-      # Step 3: Initialize Terraform
+      # Step 4: Initialize Terraform
       - name: Terraform Init
         run: terraform init
         working-directory: ./terraform
 
-      # Step 4: Plan Terraform
+      # Step 5: Plan Terraform
       - name: Terraform Plan
         run: terraform plan -out=tfplan
         working-directory: ./terraform
 
-      # Step 5: Apply Terraform
+      # Step 6: Apply Terraform
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
         working-directory: ./terraform
 
-       # Step 6: Deploy App on EC2
+      # Step 7: Deploy App on EC2
       - name: Deploy App on EC2
         run: |
-          ssh -o StrictHostKeyChecking=no -i ./key.pem ec2-user@$EC2_PUBLIC_IP << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i <(echo "${{ secrets.SSH_PRIVATE_KEY }}") ubuntu@$EC2_PUBLIC_IP << 'EOF'
           # Copy docker-compose.yaml to EC2
           cat << 'COMPOSE' > docker-compose.yaml
           version: '3.8'
@@ -63,27 +67,39 @@ jobs:
                 - S3_REGION=${AWS_REGION}
           COMPOSE
 
-          # Run docker-compose
+          # Start Docker Compose
           docker-compose up -d
           EOF
         env:
-          S3_BUCKET: "var.s3_bucket_name"  # Or whatever you set here
+          S3_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
         shell: bash
 
-        # Step 8: Destroy Infrastructure in case of failure or completion
+  # Separate Job: Destroy Resources
+  cleanup:
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: always() # Ensure this runs even if previous steps fail
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+
+    steps:
+      # Step 1: Check out the code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Terraform
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+
+      # Step 3: Destroy Infrastructure
       - name: Terraform Destroy
         run: |
-          # Use trap to ensure terraform destroy runs if anything fails
-          trap 'terraform destroy -auto-approve' ERR
-          terraform apply -auto-approve tfplan
-          echo "Resources created successfully!"
-        continue-on-error: true  # This ensures the workflow doesn't fail if destroy fails
-
-
-      # Step 7: Upload the Logs (optional)
-      - name: Upload Logs
-        if: failure()
-        uses: actions/upload-artifact@v3
-        with:
-          name: terraform-logs
-          path: terraform.log
+          terraform init
+          terraform destroy -auto-approve
+        working-directory: ./terraform

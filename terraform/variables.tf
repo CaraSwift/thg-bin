@@ -15,11 +15,8 @@ variable "instance_type" {
 
 variable "aws_key_pair" {
   description = "The key pair name for EC2 instance"
-  default     = "thgbin"
-
 }
 
 variable "ami_id" {
   description = "AMI ID for the EC2 instance"
-  default     = "ami-091f18e98bc129c4e"
 }
