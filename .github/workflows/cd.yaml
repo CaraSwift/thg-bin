@@ -70,6 +70,16 @@ jobs:
           S3_BUCKET: "var.s3_bucket_name"  # Or whatever you set here
         shell: bash
 
+        # Step 8: Destroy Infrastructure in case of failure or completion
+      - name: Terraform Destroy
+        run: |
+          # Use trap to ensure terraform destroy runs if anything fails
+          trap 'terraform destroy -auto-approve' ERR
+          terraform apply -auto-approve tfplan
+          echo "Resources created successfully!"
+        continue-on-error: true  # This ensures the workflow doesn't fail if destroy fails
+
+
       # Step 7: Upload the Logs (optional)
       - name: Upload Logs
         if: failure()
