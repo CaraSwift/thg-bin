@@ -5,7 +5,7 @@ resource "aws_instance" "thgbin_instance" {
   security_groups = [
     aws_security_group.thgbin_sg.name
   ]
-  iam_instance_profile = aws_iam_instance_profile.thgbin_instance_profile
+  iam_instance_profile = aws_iam_instance_profile.thgbin_instance_profile.name
   tags = {
     Name = "S3-Access-EC2"
   }
