@@ -22,7 +22,7 @@ resource "aws_instance" "thgbin_instance" {
               EOF
 }
 
-resource "aws_iam_instance_profile" "ec2_instance_profile" {
+resource "aws_iam_instance_profile" "thgbin_instance_profile" {
   name = "ec2-s3-instance-profile"
   role = aws_iam_role.thgbin_ec2.name
 }
