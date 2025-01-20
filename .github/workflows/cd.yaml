@@ -49,6 +49,8 @@ jobs:
       - name: SSH into EC2 and deploy docker-compose.yaml
         run: |
           chmod 600 ~/thgkey.pem
+          sudo chown ubuntu:ubuntu /opt/privatebin
+          sudo chmod 755 /opt/privatebin
           
           # Copy docker-compose.yaml to the EC2 instance
           scp -i ~/thgkey.pem -o StrictHostKeyChecking=no ./docker-compose.yaml ubuntu@$EC2_PUBLIC_IP:/opt/privatebin/docker-compose.yaml
@@ -56,8 +58,6 @@ jobs:
           # SSH into the EC2 instance to start the application
           ssh -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << EOF
             cd /opt/privatebin
-            sudo chown ubuntu:ubuntu /opt/privatebin
-            sudo chmod 755 /opt/privatebin
             docker-compose up -d
             exit
           EOF
