@@ -51,7 +51,7 @@ jobs:
         working-directory: ./terraform
 
       # Step 7: Deploy App on EC2
-      - name: Deploy App on EC2
+     - name: Deploy App on EC2
         run: |
           ssh -o StrictHostKeyChecking=no -i <(echo "${{ secrets.SSH_PRIVATE_KEY }}") ubuntu@$EC2_PUBLIC_IP << 'EOF'
           # Copy docker-compose.yaml to EC2
