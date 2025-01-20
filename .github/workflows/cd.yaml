@@ -45,15 +45,13 @@ jobs:
       # Step 6: Create SSH Key file
       - name: Create SSH key file
         run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/thgkey.pem
+        working-directory: ./terraform
 
-      - name: Deploy docker-compose.yaml
+      - name: SSH into EC2 and deploy docker-compose.yaml
         run: |
-          # Set permissions for the SSH key
           chmod 600 ~/thgkey.pem
-
-           # SSH into the EC2 instance and start the application
-          ssh -tt -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << EOF
-            cd /opt/privatebin
+          ssh -tt -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP<< EOF
+            echo docker --version
           EOF
 
 
