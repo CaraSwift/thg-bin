@@ -35,6 +35,10 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./terraform
 
+      - name: Terraform Refresh
+        run: terraform refresh
+        working-directory: ./terraform
+
       # Step 5: Fetch EC2 Public IP
       - name: Fetch EC2 Public IP
         id: ec2_ip
