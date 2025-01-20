@@ -51,7 +51,7 @@ jobs:
           chmod 600 ~/thgkey.pem
           ssh -tt -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP
 
-  Separate Job: Destroy Resources
+Separate Job: Destroy Resources
   cleanup:
     needs: deploy
     runs-on: ubuntu-latest
