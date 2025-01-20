@@ -4,7 +4,7 @@ s3_bucket_name = "thgbin-bucket"
 
 instance_type = "t2.micro"
 
-aws_key_pair = "thgbin"
+aws_key_pair = "thgkey"
 
 ami_id = "ami-091f18e98bc129c4e"
 

@@ -40,22 +40,14 @@ jobs:
         run: |
           EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip)
 
-       # Step 6: Create SSH key file from secret
-      - name: Create SSH key file
-        run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/GitHub/thgbin.pem
-
-      # Step 7: Ensure the key file has the correct permissions
-      - name: Set SSH key permissions
-        run: chmod 600 ~/GitHub/thgbin.pem
-
       # Step 8: Deploy App on EC2
       - name: Deploy App on EC2
         run: |
           # SCP the docker-compose.yaml file to the EC2 instance
-          scp -o StrictHostKeyChecking=no -i ~/GitHub/thgbin.pem docker-compose.yaml ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/
+          scp -o StrictHostKeyChecking=no -i ./thgkey.pem docker-compose.yaml ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/
 
           # SSH into the EC2 instance and run Docker Compose
-          ssh -o StrictHostKeyChecking=no -i ~/GitHub/thgbin.pem ubuntu@$EC2_PUBLIC_IP << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ./thgkey.pem ubuntu@$EC2_PUBLIC_IP << 'EOF'
             # Navigate to the directory where docker-compose.yaml was copied
             cd /home/ubuntu/
 
