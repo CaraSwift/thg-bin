@@ -49,33 +49,33 @@ jobs:
       - name: SSH into EC2 and deploy docker-compose.yaml
         run: |
           chmod 600 ~/thgkey.pem
-          ssh -tt -i ~/thgkey.pem ubuntu@$EC2_PUBLIC_IP
+          ssh -tt -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP
 
-  # Separate Job: Destroy Resources
-  # cleanup:
-  #   needs: deploy
-  #   runs-on: ubuntu-latest
-  #   if: always() # Ensure this runs even if previous steps fail
+  Separate Job: Destroy Resources
+  cleanup:
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: always() # Ensure this runs even if previous steps fail
 
-  #   env:
-  #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACESS_KEY }}
-  #     AWS_REGION: ${{ secrets.AWS_REGION }}
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
 
-  #   steps:
-  #     # Step 1: Check out the code
-  #     - name: Checkout Code
-  #       uses: actions/checkout@v3
+    steps:
+      # Step 1: Check out the code
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-  #     # Step 2: Set up Terraform
-  #     - name: Set up Terraform
-  #       uses: hashicorp/setup-terraform@v2
-  #       with:
-  #         terraform_version: 1.5.0
+      # Step 2: Set up Terraform
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
 
-  #     # Step 3: Destroy Infrastructure
-  #     - name: Terraform Destroy
-  #       run: |
-  #         terraform init
-  #         terraform destroy -auto-approve
-  #       working-directory: ./terraform
+      # Step 3: Destroy Infrastructure
+      - name: Terraform Destroy
+        run: |
+          terraform init
+          terraform destroy -auto-approve
+        working-directory: ./terraform
