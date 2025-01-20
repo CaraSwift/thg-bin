@@ -51,6 +51,7 @@ jobs:
           chmod 600 ~/thgkey.pem
           ssh -tt -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << EOF
             docker --version
+            exit
           EOF
 
   # Separate Job: Destroy Resources
