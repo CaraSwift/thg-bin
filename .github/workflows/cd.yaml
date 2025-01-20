@@ -48,20 +48,9 @@ jobs:
       - name: SSH into EC2 and deploy docker-compose.yaml
         run: |
           chmod 600 ~/thgkey.pem
-          for i in {1..5}; do
-            ssh -tt -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP <<EOF
-              docker --version
+          ssh -tt -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << EOF
+            docker --version
           EOF
-            if [ $? -eq 0 ]; then
-              echo "SSH connection successful!"
-              break
-            else
-              echo "SSH connection failed. Retrying in 30 seconds..."
-              sleep 30
-            fi
-          done
-        shell: bash
-
 
   # Separate Job: Destroy Resources
   cleanup:
