@@ -40,24 +40,9 @@ jobs:
         run: |
           EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip)
 
-      # Step 8: Deploy App on EC2
-      - name: Deploy App on EC2
-        run: |
-          # SCP the docker-compose.yaml file to the EC2 instance
-          scp -o StrictHostKeyChecking=no -i ./thgkey.pem docker-compose.yaml ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/
-
-          # SSH into the EC2 instance and run Docker Compose
-          ssh -o StrictHostKeyChecking=no -i ./thgkey.pem ubuntu@$EC2_PUBLIC_IP << 'EOF'
-            # Navigate to the directory where docker-compose.yaml was copied
-            cd /home/ubuntu/
-
-            # Start Docker Compose (this will use the existing docker-compose.yaml file)
-            docker-compose up -d
-          EOF
-        env:
-          S3_BUCKET: ${{ secrets.S3_BUCKET_NAME }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-        shell: bash
+      # Step 6: Create SSH Key file
+      - name: Create SSH key file
+        run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/GitHub/thgbin.pem
 
   # Separate Job: Destroy Resources
   cleanup:
