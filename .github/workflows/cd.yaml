@@ -43,14 +43,14 @@ jobs:
       # Step 6: Deploy App on EC2
       - name: Deploy App on EC2
         run: |
-          # Ensure the key file has the correct permissions (if it's not already set)
-          chmod 600 /path/to/your/ssh/key/thgbin.pem
+          # Ensure the key file has the correct permissions
+          chmod 600 ~/GitHub/thgbin.pem
 
-          # SSH into EC2 and deploy Docker Compose
-          scp -o StrictHostKeyChecking=no -i /path/to/your/ssh/key/thgbin.pem docker-compose.yaml ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/
+          # SCP the docker-compose.yaml file to the EC2 instance
+          scp -o StrictHostKeyChecking=no -i ~/GitHub/thgbin.pem docker-compose.yaml ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/
 
           # SSH into the EC2 instance and run Docker Compose
-          ssh -o StrictHostKeyChecking=no -i /path/to/your/ssh/key/thgbin.pem ubuntu@$EC2_PUBLIC_IP << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ~/GitHub/thgbin.pem ubuntu@$EC2_PUBLIC_IP << 'EOF'
             # Navigate to the directory where docker-compose.yaml was copied
             cd /home/ubuntu/
 
