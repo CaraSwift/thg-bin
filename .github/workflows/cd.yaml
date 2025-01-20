@@ -48,7 +48,7 @@ jobs:
 
       - name: SSH into EC2 and deploy docker-compose.yaml
         run: |
-          chmod 600 ~/thgkeypem
+          chmod 600 ~/thgkey.pem
           ssh -tt -i ~/thgkey.pem ubuntu@$EC2_PUBLIC_IP
 
   # Separate Job: Destroy Resources
