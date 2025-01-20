@@ -51,7 +51,7 @@ jobs:
           for i in {1..5}; do
             ssh -tt -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP <<EOF
               docker --version
-      EOF
+          EOF
             if [ $? -eq 0 ]; then
               echo "SSH connection successful!"
               break
