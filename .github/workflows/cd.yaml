@@ -49,8 +49,14 @@ jobs:
       - name: SSH into EC2 and deploy docker-compose.yaml
         run: |
           chmod 600 ~/thgkey.pem
-          ssh -tt -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << EOF
-            docker --version
+          
+          # Copy docker-compose.yaml to the EC2 instance
+          scp -i ~/thgkey.pem -o StrictHostKeyChecking=no ./docker-compose.yaml ubuntu@$EC2_PUBLIC_IP:/opt/privatebin/docker-compose.yaml
+
+          # SSH into the EC2 instance to start the application
+          ssh -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << EOF
+            cd /opt/privatebin
+            docker-compose up -d
             exit
           EOF
 
