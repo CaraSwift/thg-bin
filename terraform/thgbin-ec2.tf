@@ -22,7 +22,9 @@ resource "aws_instance" "thgbin_instance" {
               sudo systemctl enable docker
               curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
               chmod +x /usr/local/bin/docker-compose
-              mkdir -p /opt/privatebin
+              sudo mkdir -p /opt/privatebin
+              sudo chown ubuntu:ubuntu /opt/privatebin
+              sudo chmod 755 /opt/privatebin
               EOF
 }
 
