@@ -52,9 +52,9 @@ jobs:
           chmod 600 ~/thgkey.pem
 
           # Copy docker-compose.yaml to the EC2 instance
-          scp -tt -i ~/thgkey.pem -o StrictHostKeyChecking=no ./docker-compose.yaml ubuntu@$EC2_PUBLIC_IP:/opt/privatebin/docker-compose.yaml
+          scp -i ~/thgkey.pem -o StrictHostKeyChecking=no ./docker-compose.yaml "ubuntu@$EC2_PUBLIC_IP:/opt/privatebin/docker-compose.yaml"
 
-          # SSH into the EC2 instance and start the application
+           # SSH into the EC2 instance and start the application
           ssh -tt -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << EOF
             cd /opt/privatebin
             docker-compose up -d
