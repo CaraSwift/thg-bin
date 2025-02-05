@@ -46,6 +46,7 @@ jobs:
       - name: Create SSH key file
         run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/thgkey.pem
 
+      # Step 7: SSH into EC2 and deploy Docker
       - name: SSH into EC2 and deploy docker-compose.yaml
         run: |
           chmod 600 ~/thgkey.pem
