@@ -41,6 +41,6 @@ resource "cloudflare_dns_record" "app" {
   name    = "app"
   content = aws_instance.thgbin_instance.public_ip  # Uses EC2's public IP
   type    = "A"
-  ttl     = 300
+  ttl     = 1
   proxied = true  # Enable Cloudflare Proxy
 }
