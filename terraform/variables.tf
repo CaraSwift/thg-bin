@@ -20,3 +20,13 @@ variable "aws_key_pair" {
 variable "ami_id" {
   description = "AMI ID for the EC2 instance"
 }
+
+variable "cloudflare_api_token" {
+  type      = string
+  sensitive = true
+}
+
+variable "cloudflare_zone_id" {
+  type      = string
+  sensitive = true
+}

@@ -46,72 +46,15 @@ jobs:
       - name: Create SSH key file
         run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/thgkey.pem
 
-      # Step 7: SSH into EC2, Install Dependencies, Configure SSL
-      - name: SSH into EC2 and set up SSL
+      # Step 7: SSH into EC2 and deploy Docker
+      - name: SSH into EC2 and deploy docker-compose.yaml
         run: |
           chmod 600 ~/thgkey.pem
           
-          ssh -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << 'EOF'
-            # Install dependencies
-            sudo apt update
-            sudo apt install -y nginx docker-compose
-
-            # Set up Nginx Reverse Proxy
-            sudo tee /etc/nginx/sites-available/privatebin <<EOL
-            server {
-                listen 80;
-                server_name app.thgbin.co.uk;
-
-                location / {
-                    proxy_pass http://127.0.0.1:8080;
-                    proxy_set_header Host \$host;
-                    proxy_set_header X-Real-IP \$remote_addr;
-                    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-                }
-            }
-            EOL
-
-            sudo ln -s /etc/nginx/sites-available/privatebin /etc/nginx/sites-enabled/
-            sudo systemctl restart nginx
-
-            # Install Cloudflare Origin SSL Certificate (if using Cloudflare proxy)
-            sudo mkdir -p /etc/ssl/cloudflare
-            echo "${{ secrets.CLOUDFLARE_CERT }}" | sudo tee /etc/ssl/cloudflare/cert.pem > /dev/null
-            echo "${{ secrets.CLOUDFLARE_KEY }}" | sudo tee /etc/ssl/cloudflare/key.pem > /dev/null
-
-            # Configure Nginx for HTTPS
-            sudo tee /etc/nginx/sites-available/privatebin_ssl <<EOL
-            server {
-                listen 443 ssl;
-                server_name app.thgbin.co.uk;
-
-                ssl_certificate /etc/ssl/cloudflare/cert.pem;
-                ssl_certificate_key /etc/ssl/cloudflare/key.pem;
-
-                location / {
-                    proxy_pass http://127.0.0.1:8080;
-                    proxy_set_header Host \$host;
-                    proxy_set_header X-Real-IP \$remote_addr;
-                    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-                }
-            }
-            
-            server {
-                listen 80;
-                server_name app.thgbin.co.uk;
-                return 301 https://\$host\$request_uri;
-            }
-            EOL
-
-            sudo ln -s /etc/nginx/sites-available/privatebin_ssl /etc/nginx/sites-enabled/
-            sudo systemctl restart nginx
-          EOF
-
-      # Step 8: Deploy Docker App on EC2
-      - name: SSH into EC2 and deploy docker-compose.yaml
-        run: |
+          # Copy docker-compose.yaml to the EC2 instance
           scp -i ~/thgkey.pem -o StrictHostKeyChecking=no ./docker-compose.yaml ubuntu@$EC2_PUBLIC_IP:/opt/privatebin/docker-compose.yaml
 
+          # SSH into the EC2 instance to start the application
           ssh -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << EOF
             cd /opt/privatebin
             docker-compose up -d
