@@ -47,17 +47,31 @@ jobs:
       - name: Create SSH key file
         run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/thgkey.pem
 
-      # Step 7: SSH into EC2 and deploy Docker
-      - name: SSH into EC2 and deploy docker-compose.yaml
+      # Step 7: SSH into EC2, deploy Docker, and configure Nginx with SSL
+      - name: SSH into EC2, deploy Docker, and configure Nginx with SSL
         run: |
           chmod 600 ~/thgkey.pem
-          
+
           # Copy docker-compose.yaml to the EC2 instance
           scp -i ~/thgkey.pem -o StrictHostKeyChecking=no ./docker-compose.yaml ubuntu@$EC2_PUBLIC_IP:/opt/privatebin/docker-compose.yaml
 
-          # SSH into the EC2 instance to start the application
+          # Copy Nginx SSL setup script to the EC2 instance
+          scp -i ~/thgkey.pem -o StrictHostKeyChecking=no ./setup_nginx_ssl.sh ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/setup_nginx_ssl.sh
+
+          # SSH into the EC2 instance to:
+          # 1. Deploy Docker containers
+          # 2. Set up Nginx with Cloudflare SSL certificates
           ssh -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << EOF
+            # Deploy Docker containers using docker-compose
             cd /opt/privatebin
             docker-compose up -d
+
+            # Set up Nginx with Cloudflare SSL certificates
+            export CLOUDFLARE_CERT="${{ secrets.CLOUDFLARE_CERT }}"
+            export CLOUDFLARE_KEY="${{ secrets.CLOUDFLARE_KEY }}"
+            
+            # Run the setup script to configure Nginx SSL
+            bash /home/ubuntu/setup_nginx_ssl.sh
+
             exit
           EOF
