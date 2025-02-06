@@ -39,6 +39,7 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./terraform
 
+      # Step 5: Store EC2 Public IP  
       - name: Store EC2 Public IP
         run:  |
           EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip)
@@ -62,22 +63,19 @@ jobs:
 
           ssh -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << EOF
             sudo mkdir /etc/ssl/cloudflare
-            # Create Cloudflare cert files
+          # Create Cloudflare cert files
             echo "${{ secrets.CLOUDFLARE_CERT }}" | sudo tee /etc/ssl/cloudflare/cert.pem > /dev/null
             echo "${{ secrets.CLOUDFLARE_KEY }}" | sudo tee /etc/ssl/cloudflare/key.pem > /dev/null
             
-            # Set correct permissions
+          # Set correct permissions
             sudo chmod 600 /etc/ssl/cloudflare/cert.pem /etc/ssl/cloudflare/key.pem
             
-            # Give execute permissions to the script and run it
+          # Give execute permissions to the script and run it
             chmod +x /home/ubuntu/nginx_ssl.sh
             sudo /home/ubuntu/nginx_ssl.sh
+
+          # Run Docker Compose
+            cd /opt/privatebin
+            docker-compose up -d
+            exit
           EOF
-
-
-# SSH into EC2 and deploy Docker containers
-#ssh -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << EOF
- # cd /opt/privatebin
-  #docker-compose up -d
-  #exit
-#EOF
