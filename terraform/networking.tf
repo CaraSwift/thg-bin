@@ -29,6 +29,14 @@ resource "aws_security_group" "thgbin_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    description = "HTTP access"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["8.29.109.68/32"]
+  }
+
   egress {
     description = "Allow all outbound"
     from_port   = 0
