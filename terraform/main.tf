@@ -23,6 +23,15 @@ module "ec2" {
   source = "./.terraform"
 }
 
+terraform {
+  required_providers {
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 5"
+    }
+  }
+}
+
 # Cloudflare Provider Block
 provider "cloudflare" {
   api_token = var.cloudflare_api_token
