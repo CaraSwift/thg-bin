@@ -11,12 +11,6 @@ NGINX_CONF="/etc/nginx/sites-available/privatebin"
 sudo apt update
 sudo apt install -y nginx docker-compose
 
-# Create the necessary directories for SSL certificates
-sudo mkdir -p $CERT_PATH
-
-# Deploy Cloudflare Origin Certs (from GitHub secrets)
-echo "$CLOUDFLARE_CERT" | sudo tee $CERT_PATH/cert.pem > /dev/null
-echo "$CLOUDFLARE_KEY" | sudo tee $CERT_PATH/key.pem > /dev/null
 
 # Set up Nginx Reverse Proxy (single file for both HTTP & HTTPS)
 sudo tee $NGINX_CONF <<EOL
