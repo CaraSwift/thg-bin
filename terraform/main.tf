@@ -10,11 +10,6 @@ provider "aws" {
   region = var.aws_region
 }
 
-# Cloudflare Provider Block
-provider "cloudflare" {
-  api_token = var.cloudflare_api_token
-}
-
 # EC2 and other modules
 module "s3" {
   source = "./.terraform"
@@ -26,6 +21,11 @@ module "iam" {
 
 module "ec2" {
   source = "./.terraform"
+}
+
+# Cloudflare Provider Block
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
 }
 
 # Cloudflare DNS Record
