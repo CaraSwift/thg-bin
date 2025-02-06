@@ -10,6 +10,7 @@ services:
       S3_REGION: "${AWS_REGION}"
     ports:
       - "8080:8080"
+      - "443:443"
     volumes:
       - /opt/privatebin/cloudflare_cert.pem:/etc/ssl/cloudflare/cert.pem
       - /opt/privatebin/cloudflare_key.pem:/etc/ssl/cloudflare/key.pem
