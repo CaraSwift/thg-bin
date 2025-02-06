@@ -56,7 +56,7 @@ jobs:
           scp -i ~/thgkey.pem -o StrictHostKeyChecking=no ./docker-compose.yaml ubuntu@$EC2_PUBLIC_IP:/opt/privatebin/docker-compose.yaml
 
           # Copy Nginx SSL setup script to the EC2 instance
-          scp -i ~/thgkey.pem -o StrictHostKeyChecking=no ./setup_nginx_ssl.sh ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/setup_nginx_ssl.sh
+          scp -i ~/thgkey.pem -o StrictHostKeyChecking=no ./nginx_ssl.sh ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/nginx_ssl.sh
 
           # SSH into the EC2 instance to:
           # 1. Deploy Docker containers
@@ -71,7 +71,7 @@ jobs:
             export CLOUDFLARE_KEY="${{ secrets.CLOUDFLARE_KEY }}"
             
             # Run the setup script to configure Nginx SSL
-            bash /home/ubuntu/setup_nginx_ssl.sh
+            bash /home/ubuntu/nginx_ssl.sh
 
             exit
           EOF
