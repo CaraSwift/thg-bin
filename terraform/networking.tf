@@ -30,6 +30,14 @@ resource "aws_security_group" "thgbin_sg" {
   }
 
   ingress {
+    description = "HTTPs access"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     description = "HTTP access"
     from_port   = 8080
     to_port     = 8080
