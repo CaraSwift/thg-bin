@@ -36,7 +36,7 @@ provider "cloudflare" {
 }
 
 # Cloudflare DNS Record
-resource "cloudflare_record" "app" {
+resource "cloudflare_dns_record" "app" {
   zone_id = var.cloudflare_zone_id
   name    = "app"
   content = aws_instance.thgbin_instance.public_ip  # Uses EC2's public IP
