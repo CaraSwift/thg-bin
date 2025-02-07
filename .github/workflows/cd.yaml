@@ -14,9 +14,9 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_CERT: ${{ secrets.CLOUDFLARE_CERT }}
-      CLOUDFLARE_KEY: ${{ secrets.CLOUDFLARE_KEY }}
+      TF_VAR_CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      TF_VAR_CF_CERT: ${{ secrets.CLOUDFLARE_CERT }}
+      TF_VAR_CF_KEY: ${{ secrets.CLOUDFLARE_KEY }}
 
     steps:
       # Step 1: Checkout Code
@@ -32,6 +32,11 @@ jobs:
       # Step 3: Terraform Init
       - name: Terraform Init
         run: terraform init
+        working-directory: ./terraform
+
+      # Step 4: Terraform Plan
+      - name: Terraform Plan
+        run: terraform plan
         working-directory: ./terraform
 
       # Step 4: Terraform Apply
