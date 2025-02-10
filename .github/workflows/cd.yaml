@@ -29,6 +29,14 @@ jobs:
         with:
           terraform_wrapper: false
 
+      - name: Trivy Scan - Terraform
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "config"
+          scan-ref: "./terraform"
+          exit-code: "1"
+          severity: "CRITICAL,HIGH"
+  
       # Step 3: Terraform Init
       - name: Terraform Init
         run: terraform init
