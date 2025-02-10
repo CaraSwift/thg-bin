@@ -21,6 +21,6 @@ variable "ami_id" {
   description = "AMI ID for the EC2 instance"
 }
 
-variable "cloudflare_api_token" {}
+variable "CF_API_TOKEN" {}
 
 variable "cloudflare_zone_id" {}
