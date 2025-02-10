@@ -27,6 +27,10 @@ resource "aws_instance" "thgbin_instance" {
               sudo mkdir -p /opt/privatebin
               sudo chown ubuntu:ubuntu /opt/privatebin
               sudo chmod 755 /opt/privatebin
+              sudo apt-get update && sudo apt-get install -y wget
+              wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_Linux-64bit.tar.gz
+              tar -xvzf trivy_Linux-64bit.tar.gz
+              sudo mv trivy /usr/local/bin/
               echo "EC2 setup complete"
               EOF
 }
