@@ -1,13 +1,16 @@
 name: Deploy Infrastructure and App
 
 on:
+  pull_request:
+    branches: ["main"]
+    types: [opened, synchronize, reopened]
   push:
     branches:
       - main
   workflow_dispatch:
 
 jobs:
-  deploy:
+  provision:
     runs-on: ubuntu-latest
 
     env:
@@ -17,6 +20,7 @@ jobs:
       TF_VAR_CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       TF_VAR_CF_CERT: ${{ secrets.CLOUDFLARE_CERT }}
       TF_VAR_CF_KEY: ${{ secrets.CLOUDFLARE_KEY }}
+      TF_VAR_CF_ZONE: ${{ secrets.CLOUDFLARE_ZONE_ID }}
 
     steps:
       # Step 1: Checkout Code
@@ -39,32 +43,32 @@ jobs:
         run: terraform plan
         working-directory: ./terraform
 
-      # Step 4: Terraform Apply
+      # Step 5: Terraform Apply
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: ./terraform
 
-      # Step 5: Store EC2 Public IP  
+      # Step 6: Store EC2 Public IP  
       - name: Store EC2 Public IP
         run:  |
           EC2_PUBLIC_IP=$(terraform output -raw ec2_public_ip)
           echo "EC2_PUBLIC_IP=${EC2_PUBLIC_IP}" >> $GITHUB_ENV
-        working-directory: ./terraform
+        working-directory: ./terraform     
 
-      # Step 6: Create SSH Key file
+      # Step 1: Create SSH Key file
       - name: Create SSH key file
         run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/thgkey.pem
 
-       # Step 7: SSH into EC2, deploy Docker, and copy Cloudflare Certs
+       # Step 2: SSH into EC2, deploy Docker, and copy Cloudflare Certs
       - name: SSH into EC2, deploy Docker, and copy Cloudflare certs
         run: |
           chmod 600 ~/thgkey.pem
 
           # Copy docker-compose.yaml to the EC2 instance
-          scp -i ~/thgkey.pem -o StrictHostKeyChecking=no ./docker-compose.yaml ubuntu@$EC2_PUBLIC_IP:/opt/privatebin/docker-compose.yaml
+          scp -i ~/thgkey.pem -o StrictHostKeyChecking=no ./scripts/docker-compose.yaml ubuntu@$EC2_PUBLIC_IP:/opt/privatebin/docker-compose.yaml
 
           # Copy nginx_ssl.sh script to the EC2 instance
-          scp -i ~/thgkey.pem -o StrictHostKeyChecking=no ./nginx_ssl.sh ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/nginx_ssl.sh
+          scp -i ~/thgkey.pem -o StrictHostKeyChecking=no ./scripts/nginx_ssl.sh ubuntu@$EC2_PUBLIC_IP:/home/ubuntu/nginx_ssl.sh
 
           ssh -i ~/thgkey.pem -o StrictHostKeyChecking=no ubuntu@$EC2_PUBLIC_IP << EOF
             sudo mkdir /etc/ssl/cloudflare
