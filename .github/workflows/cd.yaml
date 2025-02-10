@@ -33,6 +33,14 @@ jobs:
         with:
           terraform_wrapper: false
 
+      - name: Trivy Scan - Terraform
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "config"
+          scan-ref: "./terraform"
+          exit-code: "0"
+          severity: "CRITICAL,HIGH"
+  
       # Step 3: Terraform Init
       - name: Terraform Init
         run: terraform init
@@ -88,3 +96,7 @@ jobs:
             docker-compose up -d
             exit
           EOF
+
+      - name: Trivy Scan - privatebin/s3
+        run: trivy image --exit-code 0 --severity CRITICAL,HIGH ubuntu:latest | tee trivy-image-report.txt
+
