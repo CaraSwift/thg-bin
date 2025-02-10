@@ -37,7 +37,7 @@ provider "cloudflare" {
 
 # Cloudflare DNS Record
 resource "cloudflare_dns_record" "app" {
-  zone_id = var.cloudflare_zone_id
+  zone_id = var.CF_ZONE
   name    = "app"
   content = aws_instance.thgbin_instance.public_ip  # Uses EC2's public IP
   type    = "A"
