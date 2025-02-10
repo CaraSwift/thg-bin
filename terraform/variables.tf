@@ -23,4 +23,4 @@ variable "ami_id" {
 
 variable "CF_API_TOKEN" {}
 
-variable "cloudflare_zone_id" {}
+variable "CF_ZONE" {}
