@@ -67,6 +67,7 @@ jobs:
       TF_VAR_CF_CERT: ${{ secrets.CLOUDFLARE_CERT }}
       TF_VAR_CF_KEY: ${{ secrets.CLOUDFLARE_KEY }}
       TF_VAR_CF_ZONE: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+      EC2_PUBLIC_IP: ${{ env.EC2_PUBLIC_IP }}
 
     steps:
       - name: Checkout Code
