@@ -52,12 +52,6 @@ resource "aws_iam_role_policy_attachment" "thgbin_cloudwatch_logs" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
 }
 
-# IAM Instance Profile (Required for EC2)
-resource "aws_iam_instance_profile" "thgbin_instance_profile" {
-  name = "thgbin-instance-profile"
-  role = aws_iam_role.thgbin_ec2.name
-}
-
 # S3 Bucket Policy to Allow Access to the EC2 Role
 resource "aws_s3_bucket_policy" "thgbin_s3_policy" {
   bucket = aws_s3_bucket.thgbin_bucket.id
