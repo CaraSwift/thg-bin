@@ -102,6 +102,6 @@ jobs:
 
       # Step 5: Terraform Plan
       - name: Terraform Destroy
-        run: terraform destroy
+        run: terraform destroy -auto-approve
         working-directory: ./terraform  
 
