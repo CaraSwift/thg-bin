@@ -100,3 +100,8 @@ jobs:
       - name: Trivy Scan - privatebin/s3
         run: trivy image --exit-code 0 --severity CRITICAL,HIGH ubuntu:latest | tee trivy-image-report.txt
 
+      # Step 5: Terraform Plan
+      - name: Terraform Destroy
+        run: terraform destroy
+        working-directory: ./terraform  
+
