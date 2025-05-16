@@ -33,6 +33,9 @@ jobs:
         with:
           terraform_wrapper: false
 
+      - name: Debug CF env
+        run: echo "Token length ${#TF_VAR_CF_API_TOKEN}"
+
       - name: Trivy Scan - Terraform
         uses: aquasecurity/trivy-action@master
         with:
