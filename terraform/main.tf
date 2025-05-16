@@ -17,12 +17,7 @@ provider "aws" {
   region = var.aws_region
 }
 
-# EC2 and other modules
-
-data "aws_vpc" "devops-vpc" {
-  id = "vpc-0d6f0907899d7ce33"
-}
-
+# EC2 and other module
 module "s3" {
   source = "./.terraform"
 }

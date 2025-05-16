@@ -12,7 +12,6 @@ resource "aws_eip" "thgbin_ip" {
 resource "aws_security_group" "thgbin_sg" {
   name        = "thgbin-sec-group"
   description = "Allow SSH and HTTP"
-  vpc_id      = data.aws_vpc.devops-vpc.id
 
   ingress {
     description = "SSH access"
