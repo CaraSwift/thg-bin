@@ -38,8 +38,8 @@ provider "cloudflare" {
 # Cloudflare DNS Record
 resource "cloudflare_dns_record" "app" {
   zone_id = var.CF_ZONE
-  name    = "app"
-  content = aws_instance.thgbin_instance.public_ip  # Uses EC2's public IP
+  name    = "@"
+  content = aws_eip.thgbin_ip.public_ip # Uses EC2's public IP
   type    = "A"
   ttl     = 1
   proxied = true  # Enable Cloudflare Proxy
