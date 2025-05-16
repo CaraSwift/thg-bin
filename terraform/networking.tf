@@ -42,7 +42,7 @@ resource "aws_security_group" "thgbin_sg" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["8.29.109.68/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
